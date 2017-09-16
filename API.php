@@ -16,17 +16,35 @@ require "punycode.php";
 
 class API
 {
-
+    /**
+     *@var string $token_id  tokenid
+     */
 
     public $token_id;
+
+    /**
+     * @var string $domain_id domainid
+     */
+
     public $domain_id;
+
+    /**
+     *@var string $record_id recordid
+     */
+
     public $record_id;
+
+
 
 	public function __construct()
 	{
         $this->setToken();
 	}
 
+    /**
+     * @param string $id token_id
+     * @return boolen (true | false)
+     */
 
 	public function setDomain_id($id = "")
 	{
@@ -57,6 +75,10 @@ class API
         return true;
 	}
 
+    /**
+     * @param string $uniq_name example=>[www]
+     * @return boolen
+     */
 
 	public function setRecord_id($uniq_name)
 	{
