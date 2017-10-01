@@ -1,12 +1,17 @@
 <?php
 
   /**
-   *               MMN.    .MM#   .JNMMMM{ dMMMMMNx.  (MMMMMNm,   MMm.   (M) .JNMMMN
-   *               M#Mb   .d#M#  (M@`      dN~   (MN- (M]    TMp  M#HN,  (M) JM[
-   *               Mb(M[  +#~M# .M#        dN~    ,Mr (M]     M#  M# TN, (M) .TMNJ,
-   *               Mb ?N,.#> M# .MN.       dN~    .M% (M]    .MF  M#  ?NeJM)    ?TMN.
-   *               Mb  WNM%  M#  ?MN,.  .. dN_ ..JMD  (M]  ..M#`  M#`  (MNM) (,. .JM\
-   *               HD   HD   M@    7WMMH9! dMMMM9"`   (MMMMB"!    HE    .TM\ ?TMMH"^
+   *   MMN.    .MM#   .JNMMMM{ dMMMMMNx.  (MMMMMNm,   MMm.   (M) .JNMMMN
+   *   M#Mb   .d#M#  (M@`      dN~   (MN- (M]    TMp  M#HN,  (M) JM[
+   *   Mb(M[  +#~M# .M#        dN~    ,Mr (M]     M#  M# TN, (M) .TMNJ,
+   *   Mb ?N,.#> M# .MN.       dN~    .M% (M]    .MF  M#  ?NeJM)    ?TMN.
+   *   Mb  WNM%  M#  ?MN,.  .. dN_ ..JMD  (M]  ..M#`  M#`  (MNM) (,. .JM\
+   *   HD   HD   M@    7WMMH9! dMMMM9"`   (MMMMB"!    HE    .TM\ ?TMMH"^
+   *   
+   *   @author soradore
+   *   
+   *   Using conoha.jp
+   *   project name=>[MCDDNS]
    *
    */
 
@@ -30,7 +35,7 @@ class API
 	{
 		$this->baseDomainToPuny();
         $this->setToken();
-	}
+    }
 
 	public function baseDomainToPuny()
 	{
