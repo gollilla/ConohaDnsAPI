@@ -1,21 +1,13 @@
 <?php
 
   /**
-   *         MMN.    .MM#   .JNMMMM{ dMMMMMNx.  (MMMMMNm,   MMm.   (M) .JNMMMN
-   *         M#Mb   .d#M#  (M@`      dN~   (MN- (M]    TMp  M#HN,  (M) JM[
-   *         Mb(M[  +#~M# .M#        dN~    ,Mr (M]     M#  M# TN, (M) .TMNJ,
-   *         Mb ?N,.#> M# .MN.       dN~    .M% (M]    .MF  M#  ?NeJM)    ?TMN.
-   *         Mb  WNM%  M#  ?MN,.  .. dN_ ..JMD  (M]  ..M#`  M#`  (MNM) (,. .JM\
-   *         HD   HD   M@    7WMMH9! dMMMM9"`   (MMMMB"!    HE    .TM\ ?TMMH"^
+   *               MMN.    .MM#   .JNMMMM{ dMMMMMNx.  (MMMMMNm,   MMm.   (M) .JNMMMN
+   *               M#Mb   .d#M#  (M@`      dN~   (MN- (M]    TMp  M#HN,  (M) JM[
+   *               Mb(M[  +#~M# .M#        dN~    ,Mr (M]     M#  M# TN, (M) .TMNJ,
+   *               Mb ?N,.#> M# .MN.       dN~    .M% (M]    .MF  M#  ?NeJM)    ?TMN.
+   *               Mb  WNM%  M#  ?MN,.  .. dN_ ..JMD  (M]  ..M#`  M#`  (MNM) (,. .JM\
+   *               HD   HD   M@    7WMMH9! dMMMM9"`   (MMMMB"!    HE    .TM\ ?TMMH"^
    *
-   *  
-   *         Contact: https://twitter.com/soradore_
-   *         If you found some bugs, plaese tell me.
-   *         
-   *         Project Name : [   MCDDNS  ]
-   *         For minecraft.
-   *         
-   *         Use https://conoha.jp API
    */
 
 require "CONFIG.php";
@@ -24,39 +16,34 @@ require "punycode.php";
 
 class API
 {
-    /**
-     *@var string $token_id  tokenid
-     */
+
 
     public $token_id;
-
-    /**
-     * @var string $domain_id domainid
-     */
-
     public $domain_id;
-
-    /**
-     *@var string $record_id recordid
-     */
-
     public $record_id;
 
+    /** var string $base  example=>[xn--????] **/
 
+    public static $base;
 
-    public function __construct()
-    {
+	public function __construct()
+	{
+		$this->baseDomainToPuny();
         $this->setToken();
-    }
+	}
 
-    /**
-     * @param string $id token_id
-     * @return boolen (true | false)
-     */
+	public function baseDomainToPuny()
+	{
+        $d = explode('.', BASE_DOMAIN_NAME);
+        $puny = Punycode::encode($d[0]);
+        self::$base = $puny.".".$d[1];
+        echo self::$base;
+	}
 
-    public function setDomain_id($id = "")
-    {
-        if($id == "") $id = $this->token_id;
+
+	public function setDomain_id($id = "")
+	{
+		if($id == "") $id = $this->token_id;
 
         $url = API_DNS_SERVICE."/v1/domains";
         $headers = [
@@ -73,27 +60,23 @@ class API
         $res = json_decode($res, true);
         $d_id = null;
         foreach($res["domains"] as $domain){
-            if($domain["name"] === BASE_DOMAIN_NAME."."){
-                $d_id = $domain['id'];
-            }
+        	if($domain["name"] === self::$base."."){
+        		$d_id = $domain['id'];
+        	}
         }
         if(empty($d_id)) return false;
         $this->domain_id = $d_id;
 
         return true;
-    }
+	}
 
-    /**
-     * @param string $uniq_name example=>[www]
-     * @return boolen
-     */
 
-    public function setRecord_id($uniq_name)
-    {
+	public function setRecord_id($uniq_name)
+	{
         $id = $this->token_id;
         $uuid = $this->domain_id;
         $url = API_DNS_SERVICE."/v1/domains/{$uuid}/records";
-        $name = $uniq_name.".".BASE_DOMAIN_NAME.".";
+        $name = $uniq_name.".".self::$base.".";
         $headers = [
                    "Accept: application/json",
                    "Content-Type: application/json",
@@ -108,20 +91,20 @@ class API
         $res = json_decode($res, true);
         $r_id = null;
         foreach($res["records"] as $record){
-            if($record["name"] === $name){
-                $r_id = $record['id'];
-            }
+        	if($record["name"] === $name){
+        		$r_id = $record['id'];
+        	}
         }
 
         $this->record_id = $r_id;
         return true;
 
-    }
-    
+	}
+	
 
-    public function setToken()
-    {
-        $url = API_IDENTITY_SERVICE . "/tokens";
+	public function setToken()
+	{
+	    $url = API_IDENTITY_SERVICE . "/tokens";
 
         $headers = array(
                          "Accept: application/json"
@@ -158,19 +141,19 @@ class API
 
     public function create_new_record($name, $ip)
     {
-        $id = $this->token_id;
-        $uuid = $this->domain_id;
-        $url = API_DNS_SERVICE."/v1/domains/{$uuid}/records";
-        $headers = [
-                    "Accept: application/json",
-                    "Content-Type: application/json",
-                    "X-Auth-Token: {$id}"
-                   ];
+    	$id = $this->token_id;
+    	$uuid = $this->domain_id;
+    	$url = API_DNS_SERVICE."/v1/domains/{$uuid}/records";
+    	$headers = [
+    		        "Accept: application/json",
+    		        "Content-Type: application/json",
+    		        "X-Auth-Token: {$id}"
+    		       ];
         $body = [
-                 "name" => $name.".".BASE_DOMAIN_NAME.".",
-                 "data" => $ip,
-                 "type" => "A",
-                 "gslb_region" => "JP"
+        	     "name" => $name.".".self::$base.".",
+        	     "data" => $ip,
+        	     "type" => "A",
+        	     "gslb_region" => "JP"
                 ];
         $req_json = json_encode($body);
         $ch = curl_init();
@@ -202,7 +185,7 @@ class API
                     "X-Auth-Token: {$id}"
                    ];
         $req_data = [
-                     "name" => $name.".".BASE_DOMAIN_NAME.".",
+                     "name" => $name.".".self::$base.".",
                      "type" => "A",
                      "data" => $ip
                     ];
