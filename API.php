@@ -18,7 +18,6 @@
 require "CONFIG.php";
 require "punycode.php";
 
-
 class API
 {
 
