@@ -30,25 +30,26 @@ class API
     /** var string $base  example=>[xn--????] **/
 
     public static $base;
-
-	public function __construct()
-	{
-		$this->baseDomainToPuny();
+	
+    public function __construct()
+    {
+        $this->baseDomainToPuny();
         $this->setToken();
     }
-
-	public function baseDomainToPuny()
-	{
+  
+    public function baseDomainToPuny()
+    {
         $d = explode('.', BASE_DOMAIN_NAME);
         $puny = Punycode::encode($d[0]);
         self::$base = $puny.".".$d[1];
         echo self::$base;
-	}
+    }
 
 
-	public function setDomain_id($id = "")
-	{
-		if($id == "") $id = $this->token_id;
+    public function setDomain_id($id = "")
+    {
+        
+        if($id == "") $id = $this->token_id;
 
         $url = API_DNS_SERVICE."/v1/domains";
         $headers = [
@@ -73,11 +74,11 @@ class API
         $this->domain_id = $d_id;
 
         return true;
-	}
+    }
 
 
-	public function setRecord_id($uniq_name)
-	{
+    public function setRecord_id($uniq_name)
+    {
         $id = $this->token_id;
         $uuid = $this->domain_id;
         $url = API_DNS_SERVICE."/v1/domains/{$uuid}/records";
@@ -96,15 +97,14 @@ class API
         $res = json_decode($res, true);
         $r_id = null;
         foreach($res["records"] as $record){
-        	if($record["name"] === $name){
-        		$r_id = $record['id'];
-        	}
+            if($record["name"] === $name){
+                $r_id = $record['id'];
+            }
         }
 
         $this->record_id = $r_id;
         return true;
-
-	}
+    }
 	
 
 	public function setToken()
